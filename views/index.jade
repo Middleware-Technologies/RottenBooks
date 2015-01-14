@@ -1,5 +1,29 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  #container
+    #intro
+      #pageHeader
+        h1
+          =title
+      | &#x9;&#x9;
+      #preamble
+        h3
+          span What is RottenBooksSearch?
+        | &#x9;&#x9;&#x9;
+        p.p1
+          span  With RottenBooksSearch you can find all information about your favourite film
+        h3
+          span Search
+        | &#x9;&#x9;&#x9;
+        p.p1
+         form( id="form" name="search", action="search", method="post")
+            input(type="text", name="user")
+            br
+            br
+            input(type="submit", value="Cerca")
+            br
+            h3
+             = cerca
+            br
+
