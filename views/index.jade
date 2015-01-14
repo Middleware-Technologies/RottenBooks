@@ -5,7 +5,7 @@ block content
     #intro
       #pageHeader
         h1
-          =title
+          =titolo
       | &#x9;&#x9;
       #preamble
         h3
@@ -24,9 +24,21 @@ block content
             input(type="submit", value="Cerca")
             br
             h3
-             = cerca
+                = cerca
             br
-            p
-                =film
+            if films.length>0
+                 table
+                     tr
+                         td
+                            h1 Titolo
+                         td
+                            h1 Anno
+
+                     for film in films
+                        tr
+                        td
+                            = film.title
+                        td
+                            =film.year
 
 

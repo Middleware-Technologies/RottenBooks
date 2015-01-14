@@ -11,6 +11,12 @@ var apiKeyMovie = 'xxcrmh8fb44ab9qukqr9426d';
 var hostMovie = 'api.rottentomatoes.com';
 var queryTermMovie="";
 
+function film(title, year)
+{
+    this.title=title;
+    this.year=year;
+}
+
 function httpGetMovie(response)
 {
     var fullRequestQueryMovie = partialQueryMovie + apiKeyMovie + '&' + queryTermMovie + '&page_limit=4';
@@ -36,25 +42,23 @@ function httpGetMovie(response)
 
             res.on('data', function(piece) {
                 jsonStringResponseMovie += piece;
-                console.log(jsonStringResponseMovie);
             });
 
-            res.on('end', function()
-            {
+            res.on('end', function() {
                 var content = JSON.parse(jsonStringResponseMovie);
-                var movies=content.movies;
 
-                var film = [];
 
-                var i;
-                for(i=0;i<movies.length;i++)
-                {
-                    film[i]=movies[i].title;
+                var films=[];
+
+                for (var i=0;i<content.movies.length;i++)                {
+                    films[i]=new film(''+content.movies[i].title,''+ content.movies[i].year);
+                    console.log(films[i]);
                 }
 
-                response.render('index',{title: 'Welcome To Home Page' ,
+
+                response.render('index',{titolo: 'Welcome To Home Page' ,
                                          cerca: 'Trovati: '+ content.total,
-                                         film: film})
+                                         films: films});
             });
 
             req.on('error', function(e) {
