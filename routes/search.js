@@ -12,11 +12,14 @@ var hostMovie = 'api.rottentomatoes.com';
 var queryTermMovie="";
 
 function film(data) {
+    data.posters.detailed = data.posters.detailed.replace('_tmb', '_det')
+    data.posters.original = data.posters.original.replace('_tmb', '_ori')
+
     this.title = data.title;
     this.year = data.year;
     this.criticsScore = data.ratings.critics_score;
     this.audienceScore = data.ratings.audience_score;
-    this.poster = data.posters.original.replace('_tmb', '_ori');
+    this.posters = data.posters;
 }
 
 function httpGetMovie(response)

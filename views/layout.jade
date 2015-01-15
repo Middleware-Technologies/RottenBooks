@@ -1,7 +1,23 @@
 doctype html
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title= 'RottenBooks'
+
+    // Bootstrap
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
+
+    link(rel='stylesheet', href='/stylesheets/main.css')
+
   body
+    nav.navbar.navbar-inverse.navbar-fixed-top
+      .container
+        a.navbar-brand(href="/")
+          | RottenBooks
     block content
+    // jQuery (necessary for Bootstrap's JavaScript plugins)
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js")
+    // Include all compiled plugins (below), or include individual files as needed
+    script(src="/bootstrap/js/bootstrap.min.js")

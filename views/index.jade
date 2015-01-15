@@ -1,57 +1,44 @@
 extends layout
 
 block content
-  #container
-    #intro
-      #pageHeader
-        h1
-          =titolo
-      | &#x9;&#x9;
-      #preamble
-        h3
-          span What is RottenBooks Search?
-        p.p1
-          span  With RottenBooksSearch you can find all information about your favourite film
-        h3
-          span Search
-        p.p1
-         form( id="form" name="search", action="search", method="post")
-            input(type="text", name="user")
-            br
-            input(type="submit", value="Cerca")
-            br
-            h3
-                = cerca
-            if films.length>0
-                 table
-                    tr
-                        td
-                            h3 Poster
-                        td
-                            h3 Titolo
-                        td
-                            h3 Anno
-                        td
-                            h3 Critics Score
-                        td
-                            h3 Audience Score
+    .jumbotron
+        .container
+            h1 Welcome to RottenBooks
 
-                     for film in films
+            p What is RottenBooks? With RottenBooksSearch you can find all information about your favourite film.
+
+            p.row
+                .col-md-4.col-md-offset-4
+                    form.form-inline( id="form" name="search", action="search", method="post")
+
+                        .form-group-lg
+                            input.form-control(type="text", name="user")
+                            | &nbsp;
+                            button.btn.btn-lg.btn-primary(type="submit") Search
+
+    .container
+
+        if films.length > 0
+            h2 Results
+
+            table.table.table-striped
+                thead
+                    tr
+                        th
+                        th Title
+                        td Year
+                        td Critics Score
+                        td Audience Score
+
+                for film in films
+                    tbody
                         tr
                             td
-                                a(href="#{film.poster}")
-                                    img(src="#{film.poster}", width=100)
-                            td
-                                = film.title
-                            td
-                                = film.year
-                            td
-                                = film.criticsScore
-                            td
-                                = film.audienceScore
-        h3
-          span Politecnico Di Milano
-    br
-    br
+                                a(href="#{film.posters.original}")
+                                    img(src="#{film.posters.detailed}", width=80)
+                            td= film.title
+                            td= film.year
+                            td= film.criticsScore
+                            td= film.audienceScore
 
 
