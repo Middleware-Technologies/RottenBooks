@@ -11,15 +11,17 @@ var apiKeyMovie = 'xxcrmh8fb44ab9qukqr9426d';
 var hostMovie = 'api.rottentomatoes.com';
 var queryTermMovie="";
 
-function film(title, year)
+function film(title, year,criticsScore, audienceScore)
 {
     this.title=title;
     this.year=year;
+    this.criticsScore=criticsScore;
+    this.audienceScore=audienceScore;
 }
 
 function httpGetMovie(response)
 {
-    var fullRequestQueryMovie = partialQueryMovie + apiKeyMovie + '&' + queryTermMovie + '&page_limit=4';
+    var fullRequestQueryMovie = partialQueryMovie + apiKeyMovie + '&' + queryTermMovie + '&page_limit=8';
     console.log('CALL: ' + hostMovie+ fullRequestQueryMovie);
 
     var headersMovie =
@@ -44,19 +46,23 @@ function httpGetMovie(response)
                 jsonStringResponseMovie += piece;
             });
 
-            res.on('end', function() {
+            res.on('end', function()
+            {
                 var content = JSON.parse(jsonStringResponseMovie);
 
 
                 var films=[];
 
-                for (var i=0;i<content.movies.length;i++)                {
-                    films[i]=new film(''+content.movies[i].title,''+ content.movies[i].year);
-                    console.log(films[i]);
+
+                for (var i=0;i<content.movies.length;i++)
+                {
+                    films[i]=new film(content.movies[i].title,content.movies[i].year,
+                                      content.movies[i].ratings.critics_score,
+                                      content.movies[i].ratings.audience_score );
                 }
 
 
-                response.render('index',{titolo: 'Welcome To Home Page' ,
+                response.render('index',{titolo: 'Welcome To RottenBooks' ,
                                          cerca: 'Trovati: '+ content.total,
                                          films: films});
             });

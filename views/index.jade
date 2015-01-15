@@ -9,36 +9,44 @@ block content
       | &#x9;&#x9;
       #preamble
         h3
-          span What is RottenBooksSearch?
-        | &#x9;&#x9;&#x9;
+          span What is RottenBooks Search?
         p.p1
           span  With RottenBooksSearch you can find all information about your favourite film
         h3
           span Search
-        | &#x9;&#x9;&#x9;
         p.p1
          form( id="form" name="search", action="search", method="post")
             input(type="text", name="user")
-            br
             br
             input(type="submit", value="Cerca")
             br
             h3
                 = cerca
-            br
             if films.length>0
                  table
-                     tr
-                         td
-                            h1 Titolo
-                         td
-                            h1 Anno
+                    tr
+                        td
+                            h3 Titolo
+                        td
+                            h3 Anno
+                        td
+                            h3 Critics Score
+                        td
+                            h3 Audience Score
 
                      for film in films
                         tr
-                        td
-                            = film.title
-                        td
-                            =film.year
+                            td
+                                = film.title
+                            td
+                                = film.year
+                            td
+                                = film.criticsScore
+                            td
+                                = film.audienceScore
+        h3
+          span Politecnico Di Milano
+    br
+    br
 
 
