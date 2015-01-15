@@ -26,6 +26,8 @@ block content
                  table
                     tr
                         td
+                            h3 Poster
+                        td
                             h3 Titolo
                         td
                             h3 Anno
@@ -36,6 +38,9 @@ block content
 
                      for film in films
                         tr
+                            td
+                                a(href="#{film.poster}")
+                                    img(src="#{film.poster}", width=100)
                             td
                                 = film.title
                             td

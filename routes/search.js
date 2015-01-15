@@ -11,12 +11,12 @@ var apiKeyMovie = 'xxcrmh8fb44ab9qukqr9426d';
 var hostMovie = 'api.rottentomatoes.com';
 var queryTermMovie="";
 
-function film(data)
-{
-    this.title=data.title;
-    this.year=data.year;
-    this.criticsScore=data.critics_score;
-    this.audienceScore=data.audience_score;
+function film(data) {
+    this.title = data.title;
+    this.year = data.year;
+    this.criticsScore = data.ratings.critics_score;
+    this.audienceScore = data.ratings.audience_score;
+    this.poster = data.posters.original.replace('_tmb', '_ori');
 }
 
 function httpGetMovie(response)
@@ -69,8 +69,7 @@ function httpGetMovie(response)
     req.end();
 
 
-};
-
+}
 
 /* GET HOME PAGE */
 router.post('/', function(req, res)
