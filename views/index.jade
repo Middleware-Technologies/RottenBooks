@@ -12,7 +12,10 @@ block content
                     form.form-inline( id="form" name="search", action="search", method="post")
 
                         .form-group-lg
-                            input.form-control(type="text", name="user")
+                            if (typeof query != 'undefined')
+                                input.form-control(type="text", name="query", placeholder="#{query}")
+                            else
+                                input.form-control(type="text", name="query")
                             | &nbsp;
                             button.btn.btn-lg.btn-primary(type="submit") Search
 
@@ -41,4 +44,28 @@ block content
                             td= film.criticsScore
                             td= film.audienceScore
 
+            nav
+                ul.pagination
+                    if page == 1
+                        li.disabled
+                            a(href="#", aria-label="Previous")
+                                span(aria-hidden="true") &laquo;
+                    else
+                        li
+                            a(href="/search?q=#{query}&page=#{page-1}", aria-label="Previous")
+                                span(aria-hidden="true") &laquo;
 
+                    - var i=1
+                    while i <= pages
+                        li
+                            a(href="/search?q=#{query}&page=#{i}")=i++
+
+
+                    if page == pages
+                        li.disabled
+                            a(href="#", aria-label="Next")
+                                span(aria-hidden="true") &raquo;
+                    else
+                        li
+                            a(href="/search?q=#{query}&page=#{page+1}", aria-label="Next")
+                                span(aria-hidden="true") &raquo;
