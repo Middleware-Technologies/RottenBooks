@@ -5,11 +5,15 @@ var querystring = require('querystring');
 var cheerio = require('cheerio');
 var books = require('google-books-search')
 
+var app = express();
+
 //VARIABILI PER PRODURRE PATH DI RICHIESTA
 var partialQueryMovie = '/api/public/v1.0/movies.json?apikey=';
 var apiKeyMovie = 'xxcrmh8fb44ab9qukqr9426d';
 var hostMovie = 'api.rottentomatoes.com';
 var queryTermMovie="";
+var queryPage = 1;
+var queryPageLimit = 5;
 
 //VARIABILI PER RICHIESTA IMDB
 var hostIMDB = 'www.imdb.com'
@@ -36,7 +40,9 @@ function Book(data) {
 
 function httpGetMovie(response)
 {
-    var fullRequestQueryMovie = partialQueryMovie + apiKeyMovie + '&' + queryTermMovie + '&page_limit=8';
+    var fullRequestQueryMovie = partialQueryMovie + apiKeyMovie;
+    fullRequestQueryMovie += '&' + querystring.stringify({q:queryTermMovie, page_limit: queryPageLimit, page: queryPage});
+
     console.log('CALL: ' + hostMovie+ fullRequestQueryMovie);
 
     var headersMovie =
@@ -66,7 +72,7 @@ function httpGetMovie(response)
             {
                 var content = JSON.parse(jsonStringResponseMovie);
 
-                var films=[];
+                var films = [];
 
                 for (var i = 0; i < content.movies.length; i++) {
                     films[i] = new film(content.movies[i]);
@@ -117,19 +123,17 @@ function httpGetMovie(response)
                         reqIMDB.end();
                     }
                 }
+
+                var numPages = Math.ceil(content.total/queryPageLimit);
                 
-                response.render('index',{titolo: 'Welcome To RottenBooks' ,
-                                         cerca: 'Trovati: '+ content.total,
-                                         films: films});
+                response.render('index',{films: films, query: queryTermMovie, page: queryPage, pages: numPages});
             });
 
+            res.on('error', function(e) {
+                console.error(e);
+            });
 
         });
-
-    req.on('error', function(e) {
-        console.error(e);
-    });
-
     req.end();
 
 
@@ -138,12 +142,33 @@ function httpGetMovie(response)
 /* GET HOME PAGE */
 router.post('/', function(req, res)
 {
-    //res.render('index',{ title: 'Welcome To Home Page',cerca: 'Cercato '+ req.body.user})
+    //res.render('index',{ title: 'Welcome To Home Page',cerca: 'Cercato '+ req.body.query})
     //FORMA LA PARTE DI QUERY q:Title
-    console.log('RICHIESTA: ' + req.body.user);
-    queryTermMovie = querystring.stringify({q:req.body.user});
+    console.log('POST QUERY: ' + req.body.query);
+    queryTermMovie = req.body.query;
+    queryPage = 1;
     httpGetMovie(res);
 });
 
+router.get('/', function (req, res) {
+    if (typeof req.query.q == 'undefined') {
+        var err = new Error('Not Found');
+        err.status = 404;
+        res.status('404').render('error', {message: err.message, error: err});
+    }
+
+    queryTermMovie = req.query.q;
+
+    if (typeof req.query.page != 'undefined') {
+        queryPage = req.query.page;
+    } else {
+        queryPage = 1;
+    }
+
+    console.log('GET QUERY: ' + queryTermMovie + ' (page ' + queryPage + ')');
+
+    httpGetMovie(res);
+
+});
 
 module.exports = router;
