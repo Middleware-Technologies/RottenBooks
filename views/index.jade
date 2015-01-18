@@ -32,7 +32,7 @@ block content
                         td Year
                         td Critics Score
                         td Audience Score
-
+                        td books
                 for film in films
                     tbody
                         tr
@@ -43,6 +43,7 @@ block content
                             td= film.year
                             td= film.criticsScore
                             td= film.audienceScore
+                            td= film.books.length
 
             nav
                 ul.pagination
