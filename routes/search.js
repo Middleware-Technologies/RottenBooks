@@ -143,7 +143,7 @@ function httpGetMovie(response)
                     function(err) {
                         console.log("Async finished!");
                         if(!err) {
-                            response.render('index', {
+                            response.json({
                                 films: films,
                                 query: queryTermMovie,
                                 page: queryPage,
