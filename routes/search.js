@@ -70,7 +70,6 @@ function httpGetMovie(response)
 
             res.on('end', function () {
                 var content = JSON.parse(jsonStringResponseMovie);
-                console.log(content)
                 var films = [];
 
                 for (var i = 0; i < content.movies.length; i++) {
