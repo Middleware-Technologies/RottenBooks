@@ -59,7 +59,7 @@ function httpGetMovie(response, query)
                     response.sendStatus(400);
                     return;
                 }
-                var numPages = Math.ceil(content.total/queryPageLimit);
+                var numPages = Math.min(Math.ceil(content.total/queryPageLimit), 25); //rottentomatoes limit
                 var films = [];
                 for (var i = 0; i < content.movies.length; i++) {
                     films[i] = new Film(content.movies[i]);
