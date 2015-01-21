@@ -9,13 +9,13 @@ block content
 
             p.row
                 .col-md-4.col-md-offset-4
-                    form.form-inline( id="form" name="search", action="search", method="post")
+                    form.form-inline( id="form" name="search", action="search", method="get")
 
                         .form-group-lg
-                            if (typeof query != 'undefined')
-                                input.form-control(type="text", name="query", placeholder="#{query}")
+                            if (typeof q != 'undefined')
+                                input.form-control(type="text", name="q", placeholder="#{query}")
                             else
-                                input.form-control(type="text", name="query")
+                                input.form-control(type="text", name="q")
                             | &nbsp;
                             button.btn.btn-lg.btn-primary(type="submit") Search
 
