@@ -56,7 +56,7 @@ function httpGetMovie(response, query)
                 var content = JSON.parse(jsonStringResponseMovie);
                 if(content.error) {
                     console.log(content.error);
-                    response.render('error', {message: content.error, error: {status: content.error}});
+                    response.sendStatus(400);
                     return;
                 }
                 var numPages = Math.ceil(content.total/queryPageLimit);

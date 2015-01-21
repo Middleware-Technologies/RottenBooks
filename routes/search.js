@@ -22,8 +22,12 @@ router.get('/', function(req, res){
             JSONResponse += data;
         });
         wsRes.on('end', function(){
-            var content = JSON.parse(JSONResponse);
-            res.render('index', content);
+            if(wsRes.statusCode>=200 && wsRes.statusCode <300){
+                var content = JSON.parse(JSONResponse);
+                res.render('index', content);
+            } else {
+                res.render('error', {message:"Ooops!", error:{ status: "Returned status code: " + wsRes.statusCode }});
+            }
         });
     }).on('error', function(e) {
         console.log('problem with request: ' + e.message);
