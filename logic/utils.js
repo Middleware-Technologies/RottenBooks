@@ -91,29 +91,31 @@ function httpGetMovie(response, query)
                                         var originalBooks = contentIMDB('*').filter(function () {
                                             return contentIMDB(this).text() === 'Original Literary Source';
                                         })[0];
-                                        var originalBook = extractBookInfo(originalBooks);
-                                        if (originalBook) {
-                                            console.log("Searching for book: "+originalBook.title+" by "+originalBook.author);
-                                            gBooks.search('', {
-                                                fields: {
-                                                    title: originalBook.title,
-                                                    author: originalBook.author
-                                                }
-                                            }, function (error, results) {
-                                                if (!error) {
-                                                    film.books = [];
-                                                    console.log("Found "+results.length+" books for "+film.title);
-                                                    for (var j = 0; j < results.length; j++) {
-                                                        film.books[j] = new Book( results[j] );
+                                        var originalBooks = extractBooksInfo(originalBooks);
+                                        async.each(originalBooks,
+                                            function(originalBook, callback) {
+                                                console.log("Searching for book: " + originalBook.title + " by " + originalBook.author);
+                                                gBooks.search('', {
+                                                    fields: {
+                                                        title: originalBook.title,
+                                                        author: originalBook.author
+                                                    },
+                                                    limit:1
+                                                }, function (error, results) {
+                                                    if (!error) {
+                                                        for (var j = 0; j < Math.min(results.length, 1); j++) {
+                                                            film.books.push(new Book(results[0]));
+                                                        }
+                                                    } else {
+                                                        console.log(error);
                                                     }
-                                                } else {
-                                                    console.log(error);
-                                                }
+                                                    callback();
+                                                });
+                                            },
+                                            function(err) {
+                                                console.log("Found " + originalBooks.length + " books for " + film.title);
                                                 callback();
                                             });
-                                        } else {
-                                            callback();
-                                        }
                                     });
                                 });
 
@@ -130,7 +132,7 @@ function httpGetMovie(response, query)
                         }
                     },
                     function(err) {
-                        console.log("Async finished!");
+                        console.log("All requests done!");
                         if(!err) {
                             response.json({
                                 films: films,
@@ -165,13 +167,14 @@ function cleanString(str) {
     return res;
 }
 
-function extractBookInfo(htmlNode) {
+function extractBooksInfo(htmlNode) {
+
+    var out = [];
 
     if(!htmlNode){
-        return null;
+        return out;
     }
 
-    var out = null;
 
     //CYCLE FOR TITLE BETWEEN QUOTES
     var next = htmlNode.next;
@@ -188,10 +191,10 @@ function extractBookInfo(htmlNode) {
         if(title){
             var regex = new RegExp(".+?(?="+title[0]+")");
             title = title[1];
-            out = {
+            out.push({
                 title: cleanString(title),
                 author: cleanString(str.match(regex)[0])
-            }
+            });
         }
         next = next.next; //lol
     }
