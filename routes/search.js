@@ -26,7 +26,7 @@ router.get('/', function(req, res){
                 var content = JSON.parse(JSONResponse);
                 res.render('index', content);
             } else {
-                res.render('error', {message:"Ooops!", error:{ status: "Returned status code: " + wsRes.statusCode }});
+                res.render('error', {message:"Ooops!", error:{ status: "Returned status code:", stack: wsRes.statusCode }});
             }
         });
     }).on('error', function(e) {
