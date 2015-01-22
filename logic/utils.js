@@ -191,7 +191,6 @@ function extractBooksInfo(htmlNode) {
         if(title){
             var regex = new RegExp(".+?(?="+RegExp.quote(title[0])+")");
             title = title[1];
-            console.log(regex);
             out.push({
                 title: cleanString(title),
                 author: cleanString(str.match(regex)[0])
