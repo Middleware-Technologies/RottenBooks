@@ -45,7 +45,17 @@ block content
                             td= film.audienceScore
                             td= film.books.length
 
-            nav
+                            td
+                                p
+                                    if ( film.books.length > 0 )
+                                        ul
+                                            for book in film.books
+                                                 li
+                                                    a(href="#{book.link}")=book.title
+                                    else
+                                        | N.A.
+
+            nav.text-center
                 ul.pagination
                     if page == 1
                         li.disabled
