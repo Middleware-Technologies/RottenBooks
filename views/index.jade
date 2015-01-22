@@ -29,21 +29,36 @@ block content
                     tr
                         th
                         th Title
-                        td Year
-                        td Critics Score
-                        td Audience Score
-                        td books
+                            small  (year)
+                        th.text-center Critics Score
+                        th.text-center Audience Score
+                        th Books
                 for film in films
                     tbody
                         tr
                             td
                                 a(href="#{film.posters.original}")
                                     img(src="#{film.posters.detailed}", width=80)
-                            td= film.title
-                            td= film.year
-                            td= film.criticsScore
-                            td= film.audienceScore
-                            td= film.books.length
+                            td
+                                h4
+                                    |#{film.title}
+                                    small  (#{film.year})
+
+                                p
+                                    strong Director:
+                                    |  Mario Rossi
+
+                            if ( film.criticsScore == -1 )
+                                td.text-center N.A.
+                            else
+                                td.text-center
+                                    h4
+                                        | #{film.criticsScore}
+                                        small  /100
+                            td.text-center
+                                h4
+                                    | #{film.audienceScore}
+                                    small  /100
 
                             td
                                 p
@@ -80,3 +95,8 @@ block content
                         li
                             a(href="/search?q=#{query}&page=#{(page*1+1)}", aria-label="Next")
                                 span(aria-hidden="true") &raquo;
+
+            if pages >= 25
+                .alert.alert-info
+                    | Sorry, we're unable to show more than 25 pages. Hopefully we're good enough to provide what you're
+                    | looking for in less than that.
