@@ -7,7 +7,7 @@ var headersMovie = { 'Content-Type': 'application/json' };
 
 var queryPageLimit = 5;
 
-router.get('/', function(req, res){
+router.get('/', function(req, res, next){
     var optionsMovie =
     {
         host: 'localhost',
@@ -26,7 +26,9 @@ router.get('/', function(req, res){
                 var content = JSON.parse(JSONResponse);
                 res.render('index', content);
             } else {
-                res.render('error', {message:"Ooops!", error:{ status: "Returned status code:", stack: wsRes.statusCode }});
+                var err = new Error(http.STATUS_CODES[wsRes.statusCode]);
+                err.status = wsRes.statusCode;
+                next(err);
             }
         });
     }).on('error', function(e) {
