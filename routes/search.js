@@ -5,8 +5,6 @@ var querystring = require(('querystring'));
 var router = express.Router();
 var headersMovie = { 'Content-Type': 'application/json' };
 
-var queryPageLimit = 5;
-
 router.get('/', function(req, res, next){
     var optionsMovie =
     {

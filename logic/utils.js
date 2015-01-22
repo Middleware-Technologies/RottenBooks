@@ -5,11 +5,12 @@
 var Film = require('../models/Film');
 var Book = require('../models/Book');
 
-var querystring = require('querystring');
 var gBooks = require('google-books-search');
 var cheerio = require('cheerio');
 var async = require('async');
 var http = require('http');
+var querystring = require('querystring');
+RegExp.quote = require('regexp-quote');
 
 //VARIABILI PER PRODURRE PATH DI RICHIESTA
 var partialQueryMovie = '/api/public/v1.0/movies.json?apikey=';
@@ -175,7 +176,6 @@ function extractBooksInfo(htmlNode) {
         return out;
     }
 
-
     //CYCLE FOR TITLE BETWEEN QUOTES
     var next = htmlNode.next;
     while(next) {
@@ -189,8 +189,9 @@ function extractBooksInfo(htmlNode) {
         var str = next['data']
         var title = str.match(/"([^"]+)"/);
         if(title){
-            var regex = new RegExp(".+?(?="+title[0]+")");
+            var regex = new RegExp(".+?(?="+RegExp.quote(title[0])+")");
             title = title[1];
+            console.log(regex);
             out.push({
                 title: cleanString(title),
                 author: cleanString(str.match(regex)[0])
