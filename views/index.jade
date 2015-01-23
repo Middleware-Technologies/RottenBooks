@@ -45,8 +45,9 @@ block content
                                     small  (#{film.year})
 
                                 p
-                                    strong Director:
-                                    |  Mario Rossi
+
+                                    if(film.directors.length!=0)
+                                        strong Director: (#{film.directors[0].name})
 
                             if ( film.criticsScore == -1 )
                                 td.text-center N.A.

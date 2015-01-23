@@ -14,6 +14,10 @@ function Film(data) {
     var alternate_ids = data.alternate_ids || {};
     this.imdb = alternate_ids.imdb;
     this.books = []
+
+    this.id=data.id;
+    this.directors=[];
 }
+
 
 module.exports = Film;

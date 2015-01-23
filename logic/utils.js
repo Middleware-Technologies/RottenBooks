@@ -9,6 +9,9 @@ var gBooks = require('google-books-search');
 var cheerio = require('cheerio');
 var async = require('async');
 var http = require('http');
+
+
+
 var querystring = require('querystring');
 RegExp.quote = require('regexp-quote');
 
@@ -16,7 +19,10 @@ RegExp.quote = require('regexp-quote');
 var partialQueryMovie = '/api/public/v1.0/movies.json?apikey=';
 var apiKeyMovie = 'xxcrmh8fb44ab9qukqr9426d';
 var hostMovie = 'api.rottentomatoes.com';
-var queryPageLimit = 5;
+var queryPageLimit = 4;
+
+//VARIABILI PER RICHIESTA SU FILM SPECIFICO
+var partialQuerySingleMovie = '/api/public/v1.0/movies/';
 
 //VARIABILI PER RICHIESTA IMDB
 var hostIMDB = 'www.imdb.com';
@@ -43,15 +49,17 @@ function httpGetMovie(response, query)
     };
 
     http.get(optionsMovie,
-        function (res) {
+        function (res)
+        {
             var jsonStringResponseMovie = '';
-            console.log("statusCode: ", res.statusCode);
+            //console.log("statusCode: ", res.statusCode);
 
             res.on('data', function (piece) {
                 jsonStringResponseMovie += piece;
             });
 
-            res.on('end', function () {
+            res.on('end', function ()
+            {
                 console.log("Got response from Rottentomatoes");
                 
                 var content = JSON.parse(jsonStringResponseMovie);
@@ -62,14 +70,57 @@ function httpGetMovie(response, query)
                 }
                 var numPages = Math.min(Math.ceil(content.total/queryPageLimit), 25); //rottentomatoes limit
                 var films = [];
-                for (var i = 0; i < content.movies.length; i++) {
+                for (var i = 0; i < content.movies.length; i++)
+                {
                     films[i] = new Film(content.movies[i]);
                 }
 
                 async.each(films,
-                    function(film, callback) {
+                    function(film, callback)
+                    {
+                        //SEARCH FOR DIRECTOR
+                        var requestUrl = partialQuerySingleMovie +film.id+'.json';
+                        requestUrl +='?apikey='+apiKeyMovie;
+
+                        var optionsSingleMovie =
+                        {
+                            host: hostMovie,
+                            path: requestUrl,
+                            method: 'GET',
+                            headers: headersMovie
+                        };
+
+                        var singleFilm = http.request(optionsSingleMovie,
+                            function (resSingleFilm)
+                            {
+                                var jsonSingleMovie = '';
+
+                                resSingleFilm.on('data', function (part)
+                                {
+                                    jsonSingleMovie += part;
+                                });
+
+                                resSingleFilm.on('end', function ()
+                                {
+                                    var singleFilmContent = JSON.parse(jsonSingleMovie);
+                                    var directors=singleFilmContent.abridged_directors;
+                                    if(singleFilmContent.abridged_directors)
+                                        film.directors=directors;
+                                    else
+                                        film.directors=[];
+
+                                });
+
+                            }).on('error', function(err)
+                            {
+                                console.error(err);
+                            });
+                        singleFilm.end();
+
+
                         //GO LOOK FOR THE BOOK
-                        if (film.imdb) {
+                        if (film.imdb)
+                        {
                             var optionsIMDB =
                             {
                                 host: hostIMDB,
@@ -80,22 +131,26 @@ function httpGetMovie(response, query)
                             console.log("SCRAPE: "+ optionsIMDB.host + optionsIMDB.path);
 
                             var reqIMDB = http.request(optionsIMDB,
-                                function (resIMDB) {
+                                function (resIMDB)
+                                {
                                     var IMDBStringResponse = '';
 
-                                    resIMDB.on('data', function (piece) {
+                                    resIMDB.on('data', function (piece)
+                                    {
                                         IMDBStringResponse += piece;
                                     });
 
-                                    resIMDB.on('end', function () {
+                                    resIMDB.on('end', function ()
+                                    {
                                         var contentIMDB = cheerio.load(IMDBStringResponse);
                                         var originalBooks = contentIMDB('*').filter(function () {
                                             return contentIMDB(this).text() === 'Original Literary Source';
                                         })[0];
                                         var originalBooks = extractBooksInfo(originalBooks);
                                         async.each(originalBooks,
-                                            function(originalBook, callback) {
-                                                console.log("Searching for book: " + originalBook.title + " by " + originalBook.author);
+                                            function(originalBook, callback)
+                                            {
+                                                //console.log("Searching for book: " + originalBook.title + " by " + originalBook.author);
                                                 gBooks.search('', {
                                                     fields: {
                                                         title: originalBook.title,
@@ -113,26 +168,29 @@ function httpGetMovie(response, query)
                                                     callback();
                                                 });
                                             },
-                                            function(err) {
+                                            function(err)
+                                            {
                                                 console.log("Found " + originalBooks.length + " books for " + film.title);
                                                 callback();
                                             });
                                     });
                                 });
 
-                            reqIMDB.on('error', function (e) {
+                            reqIMDB.on('error', function (e)
+                            {
                                 console.error("REQUEST TO IMDB FAILED");
                                 console.error(e);
                                 callback();
                             });
-
                             reqIMDB.end();
                         }
-                        else {
+                        else
+                        {
                             callback();
                         }
                     },
-                    function(err) {
+                    function(err)
+                    {
                         console.log("All requests done!");
                         if(!err) {
                             response.json({
@@ -145,8 +203,6 @@ function httpGetMovie(response, query)
                             console.error(err);
                         }
                     });
-
-
             });
 
         }).on('error', function(err) {
@@ -201,6 +257,7 @@ function extractBooksInfo(htmlNode) {
 
     return out;
 }
+
 
 module.exports = {
     httpGetMovie: httpGetMovie
