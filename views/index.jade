@@ -12,7 +12,7 @@ block content
                     form.form-inline( id="form" name="search", action="search", method="get")
 
                         .form-group-lg
-                            if (typeof q != 'undefined')
+                            if (typeof query != 'undefined')
                                 input.form-control(type="text", name="q", placeholder="#{query}")
                             else
                                 input.form-control(type="text", name="q")
@@ -66,8 +66,18 @@ block content
                                     if ( film.books.length > 0 )
                                         ul
                                             for book in film.books
-                                                 li
-                                                    a(href="#{book.link}")=book.title
+
+                                                - var authors = '';
+                                                - for author in book.authors
+                                                    - authors += author + '; ';
+
+                                                li.film-book
+                                                    if (typeof book.thumbnail != 'undefined')
+                                                        a(href="#{book.link}", data-toggle="popover-book", title="#{book.title}", data-content="<p class='text-center'><img src='#{book.thumbnail}'></p><p><strong>Author(s):</strong> #{authors}</p>")
+                                                            | #{book.title}
+                                                    else
+                                                        a(href="#{book.link}", data-toggle="popover-book", title="#{book.title}", data-content="<p><strong>Author(s):</strong> #{authors}</p>")
+                                                            | #{book.title}
                                     else
                                         | N.A.
 
