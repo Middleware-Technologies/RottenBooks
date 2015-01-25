@@ -28,8 +28,7 @@ block content
                 thead
                     tr
                         th
-                        th Title
-                            small  (year)
+                        th Title #[small (year)]
                         th.text-center Critics Score
                         th.text-center Audience Score
                         th Books
@@ -41,9 +40,7 @@ block content
                                     img(src="#{film.posters.detailed}", width=80)
                             td
                                 h4
-                                    |#{film.title}
-                                    small  (#{film.year})
-
+                                    | #{film.title} #[small (#{film.year})]
                                 p
 
                                     if(film.directors.length > 0)
@@ -61,18 +58,16 @@ block content
                                     h5
                                         | N.A.
                                 else
-                                    h4
-                                        | #{film.criticsScore}
-                                        small  /100
+                                    h3
+                                        | #{film.criticsScore}#[small /100]
 
                             td.text-center
                                 if ( film.audienceScore == -1 )
                                     h5
                                         | N.A.
                                 else
-                                    h4
-                                        | #{film.audienceScore}
-                                        small  /100
+                                    h3
+                                        | #{film.audienceScore}#[small /100]
 
                             td
                                 p
@@ -96,8 +91,7 @@ block content
                                                             | #{book.title}
                                     else
                                         .text-center
-                                            em
-                                                | (no books found)
+                                            | #[em (no books found)]
 
             nav.text-center
                 ul.pagination
@@ -129,3 +123,7 @@ block content
                 .alert.alert-info
                     | Sorry, we're unable to show more than 25 pages. Hopefully we're good enough to provide what you're
                     | looking for in less than that.
+
+        else
+            .alert.alert-warning
+                | #[strong No results] found for '#[em #{query}]'. Please, try again using the form below.
