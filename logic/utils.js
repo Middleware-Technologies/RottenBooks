@@ -196,7 +196,7 @@ function httpGetMovie(response, query)
                             response.json({
                                 films: films,
                                 query: query.q,
-                                page: query.page,
+                                page: query.page || 1,
                                 pages: numPages
                             });
                         } else {
