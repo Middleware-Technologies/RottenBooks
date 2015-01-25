@@ -5,7 +5,7 @@
 function Book(data) {
     this.title = data.title;
     this.authors = data.authors;
-    this.link = data.infoLink;
+    this.link = "http://books.google.com/books?id="+data.id;
     this.thumbnail = data.thumbnail;
 }
 
