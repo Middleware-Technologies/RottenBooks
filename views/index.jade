@@ -46,20 +46,33 @@ block content
 
                                 p
 
-                                    if(film.directors.length!=0)
-                                        strong Director: (#{film.directors[0].name})
+                                    if(film.directors.length > 0)
+                                        strong Director(s):
 
-                            if ( film.criticsScore == -1 )
-                                td.text-center N.A.
-                            else
-                                td.text-center
+                                        - for (var i=0; i<film.directors.length; i++)
+                                            |  #{film.directors[i].name}
+                                            - if (i < (film.directors.length-1))
+                                                | ,
+                                        | ;
+
+
+                            td.text-center
+                                if ( film.criticsScore == -1 )
+                                    h5
+                                        | N.A.
+                                else
                                     h4
                                         | #{film.criticsScore}
                                         small  /100
+
                             td.text-center
-                                h4
-                                    | #{film.audienceScore}
-                                    small  /100
+                                if ( film.audienceScore == -1 )
+                                    h5
+                                        | N.A.
+                                else
+                                    h4
+                                        | #{film.audienceScore}
+                                        small  /100
 
                             td
                                 p
@@ -68,18 +81,23 @@ block content
                                             for book in film.books
 
                                                 - var authors = '';
-                                                - for author in book.authors
-                                                    - authors += author + '; ';
+                                                - for (var i=0; i<book.authors.length; i++)
+
+                                                    - authors += book.authors[i];
+                                                    - if (i < (book.authors.length-1))
+                                                        - authors += ', ';
 
                                                 li.film-book
                                                     if (typeof book.thumbnail != 'undefined')
-                                                        a(href="#{book.link}", data-toggle="popover-book", title="#{book.title}", data-content="<p class='text-center'><img src='#{book.thumbnail}'></p><p><strong>Author(s):</strong> #{authors}</p>")
+                                                        a(href="#{book.link}", data-toggle="popover-book", title="#{book.title}", data-content="<p class='text-center'><img src='#{book.thumbnail}'></p><p><strong>Author(s):</strong> #{authors};</p>")
                                                             | #{book.title}
                                                     else
-                                                        a(href="#{book.link}", data-toggle="popover-book", title="#{book.title}", data-content="<p><strong>Author(s):</strong> #{authors}</p>")
+                                                        a(href="#{book.link}", data-toggle="popover-book", title="#{book.title}", data-content="<p><strong>Author(s):</strong> #{authors};</p>")
                                                             | #{book.title}
                                     else
-                                        | N.A.
+                                        .text-center
+                                            em
+                                                | (no books found)
 
             nav.text-center
                 ul.pagination
